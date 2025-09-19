@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.retrofit.logging.interceptor)
     implementation(libs.retrofit.okhttp)
     implementation(libs.glide)
+    implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

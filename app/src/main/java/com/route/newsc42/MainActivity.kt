@@ -1,13 +1,23 @@
 package com.route.newsc42
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.route.newsc42.databinding.ActivityMainBinding
 import com.route.newsc42.ui.screens.categories_fragment.CategoriesFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+import org.jetbrains.annotations.Async
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -44,8 +54,17 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
-}
 
+}
+//Coroutines - Threading - AsyncTask - JavaRx
+//class SD: AsyncTask(){
+//   fun doInBackground(){
+//
+//    }
+//    fun onPostExecute(){
+//
+//    }
+//}
 ///Http Request
 ///Link -> BaseUrl/Api Name (Endpoint)/Query Params?
 ///Types -> GET, POST
