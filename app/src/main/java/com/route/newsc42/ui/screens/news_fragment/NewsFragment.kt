@@ -6,26 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
 import com.route.newsc42.api.ApiManager
 import com.route.newsc42.api.model.ArticleDM
-import com.route.newsc42.api.model.ArticlesResponse
-import com.route.newsc42.api.model.BaseErrorResponse
 import com.route.newsc42.api.model.SourceDM
-import com.route.newsc42.api.model.SourcesResponse
 import com.route.newsc42.databinding.FragmentNewsBinding
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.collections.forEach
 
+///View -> VM(State Holder) - > Vm
 class NewsFragment(val categoryId: String) : Fragment() {
+    lateinit var viewModel: NewsViewModel
     lateinit var binding: FragmentNewsBinding
     val articleAdapter = ArticlesAdapter()
 
@@ -40,65 +35,46 @@ class NewsFragment(val categoryId: String) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadSources()
+        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
+        setUpObservers()
+        viewModel.loadSources(categoryId)
         setUpArticlesRecyclerView()
+    }
+
+    private fun setUpObservers() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) showLoading()
+            else hideLoading()
+        }
+        viewModel.sourcesErrorMessage.observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty()) {
+                hideError()
+            } else {
+                showError(it) {
+                    viewModel.loadSources(categoryId)
+                }
+            }
+        }
+        viewModel.articlesErrorMessage.observe(viewLifecycleOwner){pair->
+            if (pair.second.isNullOrEmpty()) {
+                hideError()
+            } else {
+                showError(pair.second) {
+                    viewModel.loadArticles(pair.first)
+                }
+            }
+        }
+        viewModel.sources.observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty()) return@observe
+            showTabLayout(it)
+        }
+        viewModel.articles.observe(viewLifecycleOwner){
+            showArticlesList(it)
+        }
     }
 
     private fun setUpArticlesRecyclerView() {
         binding.articlesRecycler.adapter = articleAdapter
-    }
-
-    private fun loadSources() {
-        hideError()
-        showLoading()
-        lifecycleScope.launch {
-
-            try {
-                val response = ApiManager.getWebServices().loadSources(categoryId)
-                showTabLayout(response.sources ?: listOf())
-                hideLoading()
-            } catch (e: Throwable) {
-                hideLoading()
-                showError(e.localizedMessage) {
-                    loadSources()
-                }
-            }
-
-        }
-
-//        ApiManager.getWebServices().loadSources(categoryId)
-//            .enqueue(object : Callback<SourcesResponse> {
-//                override fun onResponse(
-//                    call: Call<SourcesResponse?>,
-//                    response: Response<SourcesResponse?>
-//                ) {
-//                    hideLoading()
-//                    if (response.isSuccessful && response.body() != null) {
-//                        showTabLayout(response.body()!!.sources ?: listOf())
-//                    } else {
-//                        val errorResponse = Gson().fromJson(
-//                            response.errorBody()?.string(),
-//                            BaseErrorResponse::class.java
-//                        )
-//                        showError(
-//                            errorResponse.message ?: "Something went wrong please try again later "
-//                        ) {
-//                            loadSources()
-//                        }
-//                    }
-//                }
-//
-//                override fun onFailure(
-//                    call: Call<SourcesResponse?>,
-//                    t: Throwable
-//                ) {
-//                    hideLoading()
-//                    showError(t.localizedMessage) {
-//                        loadSources()
-//                    }
-//                }
-//
-//            })
     }
 
     private fun showTabLayout(sources: List<SourceDM>) {
@@ -109,10 +85,10 @@ class NewsFragment(val categoryId: String) : Fragment() {
             tab.tag = source.id
             binding.tabLayout.addTab(tab)
         }
-        loadArticles(sources[0].id ?: "")
+        viewModel.loadArticles(sources[0].id ?: "")
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                loadArticles(tab!!.tag as String)
+                viewModel.loadArticles(tab!!.tag as String)
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
@@ -120,41 +96,6 @@ class NewsFragment(val categoryId: String) : Fragment() {
         })
     }
 
-    private fun loadArticles(sourceId: String) {
-        showLoading()
-        lifecycleScope.launch {
-            try {
-                val response = ApiManager.getWebServices().loadArticles(sourceId)
-                showArticlesList(response.articles ?: listOf())
-                hideLoading()
-            } catch (t: Throwable) {
-                hideLoading()
-                showError(t.localizedMessage) {
-                    loadArticles(sourceId)
-                }
-            }
-
-        }
-
-//        ApiManager.getWebServices().loadArticles(sourceId)
-//            .enqueue(object : Callback<ArticlesResponse> {
-//                override fun onResponse(
-//                    call: Call<ArticlesResponse?>,
-//                    response: Response<ArticlesResponse?>
-//                ) {
-//                    if (response.isSuccessful && response.body() != null) {
-//                        showArticlesList(response.body()!!.articles ?: listOf())
-//                    }
-//                }
-//
-//                override fun onFailure(
-//                    call: Call<ArticlesResponse?>,
-//                    t: Throwable
-//                ) {
-//                }
-//
-//            })
-    }
 
     private fun showArticlesList(articles: List<ArticleDM>) {
         hideLoading()
