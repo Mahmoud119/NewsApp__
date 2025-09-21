@@ -2,8 +2,11 @@ package com.route.newsc42.ui.screens.categories_fragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.route.newsc42.R
 import com.route.newsc42.databinding.ItemCategoryLeftBinding
 import com.route.newsc42.databinding.ItemCategoryRightBinding
 import com.route.newsc42.ui.model.Category
@@ -23,12 +26,14 @@ class CategoriesAdapter(val categories: List<Category>, val onCategoryClick: (Ca
         viewType: Int
     ): CategoryViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = if (viewType == ODD_CATEGORY) ItemCategoryLeftBinding.inflate(
+        val binding: ViewDataBinding= if (viewType == ODD_CATEGORY) DataBindingUtil.inflate(
             layoutInflater,
+            R.layout.item_category_left,
             parent,
             false
-        ) else ItemCategoryRightBinding.inflate(
+        ) else DataBindingUtil.inflate(
             layoutInflater,
+            R.layout.item_category_right,
             parent,
             false
         )
@@ -55,5 +60,5 @@ class CategoriesAdapter(val categories: List<Category>, val onCategoryClick: (Ca
 
     override fun getItemCount(): Int = categories.size
 
-    class CategoryViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root)
+    class CategoryViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root)
 }

@@ -6,16 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.google.android.material.tabs.TabLayout
-import com.route.newsc42.api.ApiManager
+import com.route.newsc42.R
 import com.route.newsc42.api.model.ArticleDM
 import com.route.newsc42.api.model.SourceDM
 import com.route.newsc42.databinding.FragmentNewsBinding
-import kotlinx.coroutines.launch
 import kotlin.collections.forEach
 
 ///View -> VM(State Holder) - > Vm
@@ -29,32 +26,35 @@ class NewsFragment(val categoryId: String) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentNewsBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
+        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
+        binding.lifecycleOwner = this
+        binding.vm = viewModel
+        binding.errorView.categoryId = categoryId
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
         setUpObservers()
         viewModel.loadSources(categoryId)
         setUpArticlesRecyclerView()
     }
 
     private fun setUpObservers() {
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) showLoading()
-            else hideLoading()
-        }
-        viewModel.sourcesErrorMessage.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) {
-                hideError()
-            } else {
-                showError(it) {
-                    viewModel.loadSources(categoryId)
-                }
-            }
-        }
+//        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+//            if (isLoading) showLoading()
+//            else hideLoading()
+//        }
+//        viewModel.sourcesErrorMessage.observe(viewLifecycleOwner) {
+//            if (it.isNullOrEmpty()) {
+//                hideError()
+//            } else {
+//                showError(it) {
+//                    viewModel.loadSources(categoryId)
+//                }
+//            }
+//        }
         viewModel.articlesErrorMessage.observe(viewLifecycleOwner){pair->
             if (pair.second.isNullOrEmpty()) {
                 hideError()
@@ -98,28 +98,20 @@ class NewsFragment(val categoryId: String) : Fragment() {
 
 
     private fun showArticlesList(articles: List<ArticleDM>) {
-        hideLoading()
         articleAdapter.submitList(articles)
     }
 
-    fun hideLoading() {
-        binding.loadingProgress.isVisible = false
-    }
-
-    fun showLoading() {
-        binding.loadingProgress.isVisible = true
-    }
 
     fun showError(errorMessages: String, onRetryClick: () -> Unit) {
-        binding.errorView.root.isVisible = true
-        binding.errorView.errorMessage.text = errorMessages
-        binding.errorView.retryButton.setOnClickListener {
-            onRetryClick()
-        }
+        binding.errorView.isVisible = true
+//        binding.errorView
+//        binding.errorView.retryButton.setOnClickListener {
+//            onRetryClick()
+//        }
     }
 
     fun hideError() {
-        binding.errorView.root.isVisible = false
+       // binding.errorView.root.isVisible = false
     }
 
 }

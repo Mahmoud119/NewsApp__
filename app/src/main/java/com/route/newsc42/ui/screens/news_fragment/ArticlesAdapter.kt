@@ -2,20 +2,42 @@ package com.route.newsc42.ui.screens.news_fragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.route.newsc42.R
 import com.route.newsc42.api.model.ArticleDM
 import com.route.newsc42.databinding.ItemArticleBinding
 
-class ArticlesAdapter(var articles: List<ArticleDM> = emptyList<ArticleDM>()) :
-    RecyclerView.Adapter<ArticlesAdapter.ArticleViewHolder>() {
+val diffUtilCallback = object: DiffUtil.ItemCallback<ArticleDM>() {
+    override fun areItemsTheSame(
+        oldItem: ArticleDM,
+        newItem: ArticleDM
+    ): Boolean {
+        return oldItem.url == newItem.url
+    }
+
+    override fun areContentsTheSame(
+        oldItem: ArticleDM,
+        newItem: ArticleDM
+    ): Boolean {
+       return oldItem == newItem
+    }
+
+}
+class ArticlesAdapter(var articles: List<ArticleDM> = emptyList()) :
+    ListAdapter<ArticleDM, ArticlesAdapter.ArticleViewHolder>(diffUtilCallback) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ArticleViewHolder {
-        val binding = ItemArticleBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+        val binding: ItemArticleBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.item_article,
+            parent, false
         )
         return ArticleViewHolder(binding)
     }
@@ -25,12 +47,7 @@ class ArticlesAdapter(var articles: List<ArticleDM> = emptyList<ArticleDM>()) :
         position: Int
     ) {
         val article = articles[position]
-        holder.binding.articleTitle.text = article.title
-        holder.binding.articleAuthor.text = article.author
-        holder.binding.articleDate.text = article.publishedAt
-        Glide.with(holder.binding.root.context)
-            .load(article.urlToImage)
-            .into(holder.binding.articleImage)
+        holder.binding.article = article
     }
 
     fun submitList(articles: List<ArticleDM>){

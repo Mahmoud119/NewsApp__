@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.route.newsc42.MainActivity
+import com.route.newsc42.R
 import com.route.newsc42.databinding.FragmentCategoriesBinding
 import com.route.newsc42.ui.model.Category
 import com.route.newsc42.ui.screens.news_fragment.NewsFragment
@@ -20,7 +22,7 @@ class CategoriesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCategoriesBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_categories, container, false)
         return binding.root
     }
 

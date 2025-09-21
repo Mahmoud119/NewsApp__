@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.route.newsc42.databinding.ActivityMainBinding
@@ -24,24 +25,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setUpDrawerLayout()
         showFragment(CategoriesFragment())
     }
 
     fun setUpDrawerLayout(){
         var actionBarToggle = ActionBarDrawerToggle(
-            this, binding.root, R.string.nav_open,
+            this, binding.main, R.string.nav_open,
             R.string.nav_close
         )
-        binding.root.addDrawerListener(actionBarToggle)
+        binding.main.addDrawerListener(actionBarToggle)
         //actionBarToggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.icDrawer.setOnClickListener {
-            if (binding.root.isOpen)
-                binding.root.close()
-            else binding.root.openDrawer(GravityCompat.START)
+            if (binding.main.isOpen)
+                binding.main.close()
+            else binding.main.openDrawer(GravityCompat.START)
         }
         binding.navigationView.findViewById<TextView>(R.id.goToHome).setOnClickListener {
 
