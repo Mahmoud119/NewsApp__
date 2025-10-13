@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object ApiManager {
+object  ApiManager {
     val apiKey = "337dc2b5fe7c467aacde1b358cbe785b"
     val baseUrl = "https://newsapi.org"
     private var retrofit: Retrofit = Retrofit.Builder()
