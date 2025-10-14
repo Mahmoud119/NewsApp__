@@ -15,14 +15,6 @@ class NewsViewModel : ViewModel() {
     var sourcesState = MutableLiveData<Resource<List<SourceDM>>>()
     var articlesState = MutableLiveData<Resource<List<ArticleDM>>>()
 
-//    var sourcesApiState : Resource <List<SourceDM>> = Resource.Initial()>= Resource.Initial()
-//    var isLoading = MutableLiveData<Boolean>()
-//    var sourcesErrorMessage = MutableLiveData<String?>()
-//    var articlesErrorMessage = MutableLiveData<Pair<String, String>>()
-//
-//    var sources = MutableLiveData<List<SourceDM>>()
-//    var articles = MutableLiveData<List<ArticleDM>>()
-
     fun loadSources(categoryId: String) {
 
         viewModelScope.launch {

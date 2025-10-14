@@ -13,6 +13,7 @@ import com.route.newsc42.R
 import com.route.newsc42.api.model.ArticleDM
 import com.route.newsc42.api.model.SourceDM
 import com.route.newsc42.databinding.FragmentNewsBinding
+import com.route.newsc42.ui.utils.Resource
 import kotlin.collections.forEach
 
 ///View -> VM(State Holder) - > Vm
@@ -42,34 +43,38 @@ class NewsFragment(val categoryId: String) : Fragment() {
     }
 
     private fun setUpObservers() {
-//        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-//            if (isLoading) showLoading()
-//            else hideLoading()
-//        }
-//        viewModel.sourcesErrorMessage.observe(viewLifecycleOwner) {
-//            if (it.isNullOrEmpty()) {
-//                hideError()
-//            } else {
-//                showError(it) {
-//                    viewModel.loadSources(categoryId)
-//                }
-//            }
-//        }
-        viewModel.articlesErrorMessage.observe(viewLifecycleOwner){pair->
-            if (pair.second.isNullOrEmpty()) {
-                hideError()
-            } else {
-                showError(pair.second) {
-                    viewModel.loadArticles(pair.first)
+
+        viewModel.articlesState.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is Resource.Error -> {
+                    showError(resource.errorMessage){
+
+                    }
+                }
+
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    showArticlesList(resource.data)
+                }else->{
+
                 }
             }
         }
-        viewModel.sources.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) return@observe
-            showTabLayout(it)
-        }
-        viewModel.articles.observe(viewLifecycleOwner){
-            showArticlesList(it)
+        viewModel.sourcesState.observe(viewLifecycleOwner){resource ->
+            when(resource){
+                is Resource.Error -> {
+                    showError(resource.errorMessage){
+
+                    }
+                }
+
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    showTabLayout(resource.data)
+                }else->{
+
+            }
+            }
         }
     }
 
