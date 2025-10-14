@@ -10,8 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.route.newsc42.R
-import com.route.newsc42.api.model.ArticleDM
-import com.route.newsc42.api.model.SourceDM
+import com.route.newsc42.data.api.model.ArticleDM
+import com.route.newsc42.data.api.model.SourceDM
 import com.route.newsc42.databinding.FragmentNewsBinding
 import com.route.newsc42.ui.utils.Resource
 import kotlin.collections.forEach

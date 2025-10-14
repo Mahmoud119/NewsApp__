@@ -6,9 +6,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.route.newsc42.R
-import com.route.newsc42.api.model.ArticleDM
+import com.route.newsc42.data.api.model.ArticleDM
 import com.route.newsc42.databinding.ItemArticleBinding
 
 val diffUtilCallback = object: DiffUtil.ItemCallback<ArticleDM>() {

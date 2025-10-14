@@ -3,9 +3,9 @@ package com.route.newsc42.ui.screens.news_fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.route.newsc42.api.ApiManager
-import com.route.newsc42.api.model.ArticleDM
-import com.route.newsc42.api.model.SourceDM
+import com.route.newsc42.data.api.ApiManager
+import com.route.newsc42.data.api.model.ArticleDM
+import com.route.newsc42.data.api.model.SourceDM
 import com.route.newsc42.ui.utils.Resource
 import kotlinx.coroutines.launch
 

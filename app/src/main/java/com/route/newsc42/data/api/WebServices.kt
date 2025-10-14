@@ -1,8 +1,7 @@
-package com.route.newsc42.api
+package com.route.newsc42.data.api
 
-import com.route.newsc42.api.model.ArticlesResponse
-import com.route.newsc42.api.model.SourcesResponse
-import retrofit2.Call
+import com.route.newsc42.data.api.model.ArticlesResponse
+import com.route.newsc42.data.api.model.SourcesResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

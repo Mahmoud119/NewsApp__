@@ -6,7 +6,7 @@
     <data>
         <variable
             name="article"
-            type="com.route.newsc42.api.model.ArticleDM" />
+            type="com.route.newsc42.data.api.model.ArticleDM" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

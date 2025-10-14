@@ -1,4 +1,4 @@
-package com.route.newsc42.api
+package com.route.newsc42.data.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
