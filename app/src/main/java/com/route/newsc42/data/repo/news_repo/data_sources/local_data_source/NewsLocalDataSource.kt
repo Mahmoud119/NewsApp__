@@ -1,15 +1,20 @@
 package com.route.newsc42.data.repo.news_repo.data_sources.local_data_source
 
 import com.route.newsc42.data.api.model.SourceDM
+import com.route.newsc42.data.database.daos.SourcesDao
 import com.route.newsc42.data.utils.ApiResult
 
-class NewsLocalDataSource {
-     fun loadSources(): ApiResult<List<SourceDM>>{
-
+class NewsLocalDataSource (val sourcesDao : SourcesDao) {
+     suspend fun loadSources(): ApiResult<List<SourceDM>>{
+        try {
+            return ApiResult.Success(sourcesDao.loadSources())
+        }catch (t : Throwable){
+            return ApiResult.Error(t.localizedMessage)
+        }
 
     }
-     fun saveSources(sources: List<SourceDM>){
+    suspend fun saveSources(sources: List<SourceDM>){
 
-
+        sourcesDao.saveSources(sources)
     }
 }
