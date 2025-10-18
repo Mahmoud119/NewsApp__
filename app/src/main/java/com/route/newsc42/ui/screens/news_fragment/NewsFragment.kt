@@ -24,8 +24,7 @@ class NewsFragment(val categoryId: String) : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
         viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
@@ -44,36 +43,47 @@ class NewsFragment(val categoryId: String) : Fragment() {
 
     private fun setUpObservers() {
 
-        viewModel.articlesState.observe(viewLifecycleOwner){resource ->
-            when(resource){
+        viewModel.articlesState.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
                 is Resource.Error -> {
-                    showError(resource.errorMessage){
+                    hideLoading()
+                    showError(resource.errorMessage) {
 
                     }
                 }
 
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                    showLoading()
+                }
+
                 is Resource.Success -> {
+                    hideLoading()
                     showArticlesList(resource.data)
-                }else->{
+                }
+
+                else -> {
 
                 }
             }
         }
-        viewModel.sourcesState.observe(viewLifecycleOwner){resource ->
-            when(resource){
+        viewModel.sourcesState.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
                 is Resource.Error -> {
-                    showError(resource.errorMessage){
-
-                    }
+                    showError(resource.errorMessage) {}
                 }
 
-                is Resource.Loading -> {}
-                is Resource.Success -> {
-                    showTabLayout(resource.data)
-                }else->{
+                is Resource.Loading -> {
+                    showLoading()
+                }
 
-            }
+                is Resource.Success -> {
+                    hideLoading()
+                    showTabLayout(resource.data)
+                }
+
+                else -> {
+
+                }
             }
         }
     }
@@ -109,14 +119,23 @@ class NewsFragment(val categoryId: String) : Fragment() {
 
     fun showError(errorMessages: String, onRetryClick: () -> Unit) {
         binding.errorView.isVisible = true
-//        binding.errorView
-//        binding.errorView.retryButton.setOnClickListener {
-//            onRetryClick()
-//        }
+        binding.errorView
+        binding.errorView.retryButton.setOnClickListener {
+            onRetryClick()
+        }
     }
 
     fun hideError() {
-       // binding.errorView.root.isVisible = false
+        binding.errorView.root.isVisible = false
+    }
+
+    fun showLoading() {
+        binding.loadingProgress.isVisible = true
+
+    }
+
+    fun hideLoading() {
+        binding.loadingProgress.isVisible = false
     }
 
 }

@@ -26,7 +26,7 @@ data class SourceDM(
 	@ColumnInfo
 	@PrimaryKey
 	@field:SerializedName("id")
-	val id: String? = null,
+	val id: String ,
 
 	@ColumnInfo
 	@field:SerializedName("category")
